@@ -14,8 +14,14 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.urls import path
-from .views import UnPublicMenuAPIView, PublicMenuAPIView
+
+from .views import UnPublicMenuAPIView, PublicMenuAPIView, UnPubliscDishAPIView1, UnPubliscDishAPIView2, UnPubliscDishAPIView3
 
 urlpatterns = [
-    path('unpublic/<str:menu>/', UnPublicMenuAPIView.as_view()),
+    # path('unpublic/menu/', UnPublicMenuAPIView.as_view()),  # for post method
+    # path('unpublic/menu/<str:menu_name>/', UnPublicMenuAPIView.as_view()),
+    path('unpublic/dish/', UnPubliscDishAPIView1.as_view()),  # add new dish, get all dishes
+    path('unpublic/dish/<str:menu_name>/', UnPubliscDishAPIView2.as_view()),  # get all dishes for menu
+    path('unpublic/dish/<str:menu_name>/<int:dish_id>/', UnPubliscDishAPIView3.as_view()),  # get sepcific dish, update it or delete
+
 ]
