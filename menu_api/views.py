@@ -38,7 +38,7 @@ class UnPublicMenuAPIView1(BaseUnPublicMenuApiView):
 
     def get(self, request):
         user_id = request.user.id
-        menus = Menu.objects.filter(user_id=user_id).all()
+        menus = Menu.objects.filter(user_id=user_id)
         serializer = self.serializer_class(menus, many=True)
         return Response(serializer.data)
 
@@ -107,7 +107,7 @@ class UnPubliscDishAPIView1(BaseUnPublicDishApiView):
 
     def get(self, request):
         user_id = request.user.id
-        dishes = Dish.objects.filter(menu__user__id=user_id).all()
+        dishes = Dish.objects.filter(menu__user__id=user_id)
         serializer = self.serializer_class(dishes, many=True)
         return Response(serializer.data)
 
@@ -127,7 +127,7 @@ class UnPubliscDishAPIView2(BaseUnPublicDishApiView):
 
     def get(self, request, menu_name):
         user_id = request.user.id
-        dishes = Dish.objects.filter(menu__name=menu_name, menu__user__id=user_id).all()
+        dishes = Dish.objects.filter(menu__name=menu_name, menu__user__id=user_id)
         if dishes.count() == 0:
             return Response(status=status.HTTP_404_NOT_FOUND)
         serializer = self.serializer_class(dishes, many=True)
