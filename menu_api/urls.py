@@ -15,8 +15,8 @@ Including another URLconf
 """
 from django.urls import path
 
-from .views import UnPublicMenuAPIView1, UnPublicMenuAPIView2, \
-    UnPubliscDishAPIView1, UnPubliscDishAPIView2, UnPubliscDishAPIView3
+from .views import UnPublicMenuAPIView1, UnPublicMenuAPIView2,   UnPubliscDishAPIView1, UnPubliscDishAPIView2,\
+                   UnPubliscDishAPIView3, PublicMenuAPIView
 
 urlpatterns = [
     path('unpublic/menu/', UnPublicMenuAPIView1.as_view()),  #  add new menu, get all menus
@@ -24,4 +24,5 @@ urlpatterns = [
     path('unpublic/dish/', UnPubliscDishAPIView1.as_view()),  # add new dish, get all dishes
     path('unpublic/dish/<str:menu_name>/', UnPubliscDishAPIView2.as_view()),  # get all dishes for menu
     path('unpublic/dish/<str:menu_name>/<int:dish_id>/', UnPubliscDishAPIView3.as_view()),  # get specific dish, update it or delete
+    path('menu/', PublicMenuAPIView.as_view())
 ]

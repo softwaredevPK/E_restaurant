@@ -1,21 +1,24 @@
-from rest_framework.views import APIView
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
-from django.http import HttpResponse
-from rest_framework.generics import GenericAPIView
+from rest_framework.generics import GenericAPIView, ListAPIView
 from rest_framework.filters import SearchFilter, OrderingFilter
+
+from django.db.models import Count
 
 from .serializers import DishSerializer, MenuSerializer
 from .models import Menu, Dish
 
 
-class PublicMenuAPIView(APIView):
+class PublicMenuAPIView(ListAPIView):
     serializer_class = MenuSerializer
+    filter_backends = [SearchFilter, OrderingFilter]
+    search_fields = ['name', 'post_date', 'update_date', 'dish__name']
+    ordering_fields = ['dish__name', 'dish_count']
 
-    def get(self, request):
-        ...
+    def get_queryset(self):
+        return Menu.objects.filter(dish__isnull=False).annotate(dish_count=Count('dish')).distinct()
 
 
 # Menu Views

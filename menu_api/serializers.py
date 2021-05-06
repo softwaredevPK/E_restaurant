@@ -14,7 +14,8 @@ class MenuSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Menu
-        fields = ['name', 'description', 'dish_set', 'user']
+        fields = ['name', 'description', 'user', 'update_date', 'update_date', 'dish_set']
+        read_only_fields = ['update_date', 'update_date']
 
     def save(self, user, **kwargs):
         self.validated_data['user'] = user
