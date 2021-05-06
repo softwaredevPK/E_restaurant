@@ -5,6 +5,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.http import HttpResponse
 from rest_framework.generics import GenericAPIView
+from rest_framework.filters import SearchFilter, OrderingFilter
 
 from .serializers import DishSerializer, MenuSerializer
 from .models import Menu, Dish
@@ -21,10 +22,10 @@ class PublicMenuAPIView(APIView):
 
 
 class BaseUnPublicMenuApiView(GenericAPIView):
-    serializer_class = DishSerializer
+    serializer_class = MenuSerializer
     authentication_classes = [SessionAuthentication, BasicAuthentication]
     permission_classes = [IsAuthenticated]
-    queryset = Dish.objects.all()
+    queryset = Menu.objects.all()
 
 
 class UnPublicMenuAPIView1(BaseUnPublicMenuApiView):
@@ -33,14 +34,15 @@ class UnPublicMenuAPIView1(BaseUnPublicMenuApiView):
     """
 
     def get(self, request):
-        menus = self.queryset
+        user_id = request.user.id
+        menus = Menu.objects.filter(user_id=user_id).all()
         serializer = self.serializer_class(menus, many=True)
         return Response(serializer.data)
 
-    def post(self, request,):
-        serializer = self.serializer_class(data=request.data)
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data, context={'request': request})
         if serializer.is_valid():
-            serializer.save()
+            serializer.save(user=request.user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -50,15 +52,16 @@ class UnPublicMenuAPIView2(BaseUnPublicMenuApiView):
     ApiView which provide get, update and delete methods for particular Menu
     """
 
-    def get_menu(self, menu_name):
+    def get_menu(self, menu_name, user_id):
         """Method return instance of Menu or None if not exist"""
         try:
-            return Menu.objects.get(name=menu_name)
+            return Menu.objects.get(name=menu_name, user_id=user_id)
         except Menu.DoesNotExist:
             return None
 
     def put(self, request, menu_name):
-        menu = self.get_menu(menu_name)
+        user_id = request.user.id
+        menu = self.get_menu(menu_name, user_id)
         if menu is None:
             return Response(status=status.HTTP_404_NOT_FOUND)
         serializer = self.serializer_class(menu, data=request.data)
@@ -68,14 +71,16 @@ class UnPublicMenuAPIView2(BaseUnPublicMenuApiView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def get(self, request, menu_name):
-        menu = self.get_menu(menu_name)
+        user_id = request.user.id
+        menu = self.get_menu(menu_name, user_id)
         if menu is None:
             return Response(status=status.HTTP_404_NOT_FOUND)
         serializer = self.serializer_class(menu)
         return Response(serializer.data)
 
     def delete(self, request, menu_name):
-        menu = self.get_menu(menu_name)
+        user_id = request.user.id
+        menu = self.get_menu(menu_name, user_id)
         if menu is None:
             return Response(status=status.HTTP_404_NOT_FOUND)
         menu.delete()
@@ -98,7 +103,8 @@ class UnPubliscDishAPIView1(BaseUnPublicDishApiView):
     """
 
     def get(self, request):
-        dishes = Dish.objects.all()
+        user_id = request.user.id
+        dishes = Dish.objects.filter(menu__user__id=user_id).all()  # todo nie dziala, moze powinienem sprawdzac user-a wczesniej? jak w Menu dodac do serializera?
         serializer = self.serializer_class(dishes, many=True)
         return Response(serializer.data)
 
@@ -117,7 +123,8 @@ class UnPubliscDishAPIView2(BaseUnPublicDishApiView):
     """
 
     def get(self, request, menu_name):
-        dishes = Dish.objects.filter(menu__name=menu_name).all()
+        user_id = request.user.id
+        dishes = Dish.objects.filter(menu__name=menu_name, menu__user__id=user_id).all()
         serializer = self.serializer_class(dishes, many=True)
         return Response(serializer.data)
 
@@ -127,15 +134,16 @@ class UnPubliscDishAPIView3(BaseUnPublicDishApiView):
     ApiView which provide get, update and delete methods for particular dish
     """
 
-    def get_dish(self, menu_name, dish_id):
+    def get_dish(self, menu_name, dish_id, user_id):
         """Method return instance of Dish or None if not exist"""
         try:
-            return Dish.objects.get(menu__name=menu_name, id=dish_id)
+            return Dish.objects.get(menu__name=menu_name, id=dish_id, menu__user__id=user_id)
         except Dish.DoesNotExist:
             return None
 
     def put(self, request, menu_name, dish_id):
-        dish = self.get_dish(menu_name, dish_id)
+        user_id = request.user.id
+        dish = self.get_dish(menu_name, dish_id, user_id)
         if dish is None:
             return Response(status=status.HTTP_404_NOT_FOUND)
         serializer = self.serializer_class(dish, data=request.data)
@@ -145,14 +153,16 @@ class UnPubliscDishAPIView3(BaseUnPublicDishApiView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def get(self, request, menu_name, dish_id):
-        dish = self.get_dish(menu_name, dish_id)
+        user_id = request.user.id
+        dish = self.get_dish(menu_name, dish_id, user_id)
         if dish is None:
             return Response(status=status.HTTP_404_NOT_FOUND)
         serializer = self.serializer_class(dish)
         return Response(serializer.data)
 
     def delete(self, request, menu_name, dish_id):
-        dish = self.get_dish(menu_name, dish_id)
+        user_id = request.user.id
+        dish = self.get_dish(menu_name, dish_id, user_id)
         if dish is None:
             return Response(status=status.HTTP_404_NOT_FOUND)
         dish.delete()
