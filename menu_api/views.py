@@ -67,9 +67,9 @@ class UnPublicMenuAPIView2(BaseUnPublicMenuApiView):
         menu = self.get_menu(menu_name, user_id)
         if menu is None:
             return Response(status=status.HTTP_404_NOT_FOUND)
-        serializer = self.serializer_class(menu, data=request.data)
+        serializer = self.serializer_class(menu, data=request.data, context={'request': request})
         if serializer.is_valid():
-            serializer.save()
+            serializer.save(request.user)
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -107,7 +107,7 @@ class UnPubliscDishAPIView1(BaseUnPublicDishApiView):
 
     def get(self, request):
         user_id = request.user.id
-        dishes = Dish.objects.filter(menu__user__id=user_id).all()  # todo nie dziala, moze powinienem sprawdzac user-a wczesniej? jak w Menu dodac do serializera?
+        dishes = Dish.objects.filter(menu__user__id=user_id).all()
         serializer = self.serializer_class(dishes, many=True)
         return Response(serializer.data)
 
@@ -128,6 +128,8 @@ class UnPubliscDishAPIView2(BaseUnPublicDishApiView):
     def get(self, request, menu_name):
         user_id = request.user.id
         dishes = Dish.objects.filter(menu__name=menu_name, menu__user__id=user_id).all()
+        if dishes.count() == 0:
+            return Response(status=status.HTTP_404_NOT_FOUND)
         serializer = self.serializer_class(dishes, many=True)
         return Response(serializer.data)
 
