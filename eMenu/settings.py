@@ -127,7 +127,8 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.SessionAuthentication',
-    ]
+    ],
+    'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema'
 }
 
 CELERY_BROKER_URL = 'amqps://nqxdfriq:4wK9PcNHOWAy6BzT0AVH6fhtNWF6dg_E@whale.rmq.cloudamqp.com/nqxdfriq'
@@ -141,5 +142,9 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = ''  # todo temp
-EMAIL_HOST_PASSWORD = ''  # todo temp
+
+# Email created for project purposes
+
+EMAIL_HOST_USER = '	emenupk@gmail.com'
+EMAIL_HOST_PASSWORD = 'llytetpdgrbwglgl'
+

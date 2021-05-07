@@ -15,6 +15,9 @@ Including another URLconf
 """
 from django.urls import path
 
+from rest_framework.schemas import get_schema_view
+from rest_framework.documentation import include_docs_urls
+
 from .views import UnPublicMenuAPIView1, UnPublicMenuAPIView2,   UnPubliscDishAPIView1, UnPubliscDishAPIView2,\
                    UnPubliscDishAPIView3, PublicMenuAPIView
 
@@ -24,5 +27,10 @@ urlpatterns = [
     path('unpublic/dish/', UnPubliscDishAPIView1.as_view()),  # add new dish, get all dishes
     path('unpublic/dish/<str:menu_name>/', UnPubliscDishAPIView2.as_view()),  # get all dishes for menu
     path('unpublic/dish/<str:menu_name>/<int:dish_id>/', UnPubliscDishAPIView3.as_view()),  # get specific dish, update it or delete
-    path('menu/', PublicMenuAPIView.as_view())
+    path('menu/', PublicMenuAPIView.as_view()),  # get available menus
+    path('docs/', include_docs_urls(title='eMenuAPI')),
+    path('schema', get_schema_view(
+        title='eMenuAPI',
+        description='API for eMenu',
+        version="1.0.0"))
 ]

@@ -8,10 +8,10 @@ admin
 
 
 ## Celery commands
-celery -A E_restaurant worker -l info
-celery -A E_restaurant beat -l info/debug
-celery -A proj beat -l INFO --scheduler django_celery_beat.schedulers:DatabaseScheduler
+celery -A eMenu worker -l info
+celery -A eMenu beat -l INFO --scheduler django_celery_beat.schedulers:DatabaseScheduler
 
-
-
+##coverage
+coverage run manage.py test
+coverage report -m
 

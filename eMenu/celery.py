@@ -19,8 +19,7 @@ app.config_from_object('django.conf:settings', namespace='CELERY')
 app.conf.beat_schedule = {
     'newsletter': {
         'task': 'menu_api.tasks.send_newsletter_email',
-        # 'schedule': crontab(minute=10, hour=18)
-        'schedule': 50
+        'schedule': crontab(minute=0, hour=10)
     }
 }
 # Load task modules from all registered Django app configs.
