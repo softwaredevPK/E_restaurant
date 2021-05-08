@@ -24,14 +24,14 @@ class PublicMenuAPIView(ListAPIView):
 # Menu Views
 
 
-class BaseUnPublicMenuApiView(GenericAPIView):
+class BaseNonPublicMenuApiView(GenericAPIView):
     serializer_class = MenuSerializer
     authentication_classes = [SessionAuthentication, BasicAuthentication]
     permission_classes = [IsAuthenticated]
     queryset = Menu.objects.all()
 
 
-class UnPublicMenuAPIView1(BaseUnPublicMenuApiView):
+class NonPublicMenuAPIView1(BaseNonPublicMenuApiView):
     """
     ApiView which provide post method to create new Menu, and to show all available Menus
     """
@@ -50,7 +50,7 @@ class UnPublicMenuAPIView1(BaseUnPublicMenuApiView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class UnPublicMenuAPIView2(BaseUnPublicMenuApiView):
+class NonPublicMenuAPIView2(BaseNonPublicMenuApiView):
     """
     ApiView which provide get, update and delete methods for particular Menu
     """
@@ -93,14 +93,14 @@ class UnPublicMenuAPIView2(BaseUnPublicMenuApiView):
 # Dish Views
 
 
-class BaseUnPublicDishApiView(GenericAPIView):
+class BaseNonPublicDishApiView(GenericAPIView):
     serializer_class = DishSerializer
     authentication_classes = [SessionAuthentication, BasicAuthentication]
     permission_classes = [IsAuthenticated]
     queryset = Dish.objects.all()
 
 
-class UnPubliscDishAPIView1(BaseUnPublicDishApiView):
+class NonPublicDishAPIView1(BaseNonPublicDishApiView):
     """
     ApiView which provide post method to create new dishes, and to show all available dishes
     """
@@ -120,7 +120,7 @@ class UnPubliscDishAPIView1(BaseUnPublicDishApiView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class UnPubliscDishAPIView2(BaseUnPublicDishApiView):
+class NonPublicDishAPIView2(BaseNonPublicDishApiView):
     """
     ApiView which provide get method to provide all dishes for given menu
     """
@@ -134,7 +134,7 @@ class UnPubliscDishAPIView2(BaseUnPublicDishApiView):
         return Response(serializer.data)
 
 
-class UnPubliscDishAPIView3(BaseUnPublicDishApiView):
+class NonPublicDishAPIView3(BaseNonPublicDishApiView):
     """
     ApiView which provide get, update and delete methods for particular dish
     """

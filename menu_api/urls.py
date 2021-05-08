@@ -18,15 +18,15 @@ from django.urls import path
 from rest_framework.schemas import get_schema_view
 from rest_framework.documentation import include_docs_urls
 
-from .views import UnPublicMenuAPIView1, UnPublicMenuAPIView2,   UnPubliscDishAPIView1, UnPubliscDishAPIView2,\
-                   UnPubliscDishAPIView3, PublicMenuAPIView
+from .views import NonPublicMenuAPIView1, NonPublicMenuAPIView2,   NonPublicDishAPIView1, NonPublicDishAPIView2,\
+                   NonPublicDishAPIView3, PublicMenuAPIView
 
 urlpatterns = [
-    path('unpublic/menu/', UnPublicMenuAPIView1.as_view()),  #  add new menu, get all menus
-    path('unpublic/menu/<str:menu_name>/', UnPublicMenuAPIView2.as_view()),  # get specific menu, update it or delete
-    path('unpublic/dish/', UnPubliscDishAPIView1.as_view()),  # add new dish, get all dishes
-    path('unpublic/dish/<str:menu_name>/', UnPubliscDishAPIView2.as_view()),  # get all dishes for menu
-    path('unpublic/dish/<str:menu_name>/<int:dish_id>/', UnPubliscDishAPIView3.as_view()),  # get specific dish, update it or delete
+    path('nonpublic/menu/', NonPublicMenuAPIView1.as_view()),  #  add new menu, get all menus
+    path('nonpublic/menu/<str:menu_name>/', NonPublicMenuAPIView2.as_view()),  # get specific menu, update it or delete
+    path('nonpublic/dish/', NonPublicDishAPIView1.as_view()),  # add new dish, get all dishes
+    path('nonpublic/dish/<str:menu_name>/', NonPublicDishAPIView2.as_view()),  # get all dishes for menu
+    path('nonpublic/dish/<str:menu_name>/<int:dish_id>/', NonPublicDishAPIView3.as_view()),  # get specific dish, update it or delete
     path('menu/', PublicMenuAPIView.as_view()),  # get available menus
     path('docs/', include_docs_urls(title='eMenuAPI')),
     path('schema', get_schema_view(
