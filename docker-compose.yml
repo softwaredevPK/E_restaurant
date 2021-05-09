@@ -1,0 +1,35 @@
+version: '3'
+
+services:
+    django:
+        build: .
+        container_name: django
+        command: python manage.py runserver 0.0.0.0:8000
+        volumes:
+            - .:/usr/src/app/
+        ports:
+            - "8000:8000"
+        environment:
+            - DEBUG=1
+            - DJANGO_ALLOWED_HOSTS=localhost 127.0.0.1
+        depends_on:
+            -   rabbitmq
+    rabbitmq:
+        image: rabbitmq
+    celery:
+        build: .
+        command: celery -A eMenu worker -l info
+        volumes:
+        - .:/usr/src/app/
+        depends_on:
+            - django
+            - rabbitmq
+    celery_beat:
+        build: .
+        command: celery -A eMenu beat -l INFO --scheduler django_celery_beat.schedulers:DatabaseScheduler
+        volumes:
+            - .:/usr/src/app/
+        depends_on:
+            - django
+            - rabbitmq
+

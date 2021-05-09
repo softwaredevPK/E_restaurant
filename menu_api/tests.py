@@ -153,7 +153,7 @@ class AuthenticatedTestCase2(APITestCase):
     def test_nonpublic_dish_post(self):
         self.client.force_login(self.user)
         menu1 = Menu.objects.create(name='menu1', description='Test description', user=self.user)
-        response = self.client.post(f'/unpublic/dish/',
+        response = self.client.post(f'/nonpublic/dish/',
                                    data={'name': 'dish for menu1', 'description': 'Test description',
                                          'price': 115, 'prepare_time': datetime.timedelta(days=0, seconds=800),
                                          'menu': menu1})
